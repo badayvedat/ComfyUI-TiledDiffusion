@@ -211,16 +211,16 @@ def inject_code(original_func, data, mode='a'):
     modified_source = dedent(modified_source.strip("\n"))
     return write_to_file_and_return_fn(original_func, modified_source, mode)
 
-def write_to_file_and_return_fn(original_func, source:str, mode='w'):
+def write_to_file_and_return_fn(original_func, source:str, mode='w+b'):
     # Write the modified source code to a temporary file so the
     # source code and stack traces can still be viewed when debugging.
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    with tempfile.TemporaryFile(mode=mode, suffix=".patches.py", dir=current_dir) as temp_file:
-        temp_file.write(source)
-        temp_file.flush()
+    with tempfile.NamedTemporaryFile(suffix=".patches.py", dir=current_dir) as fp:
+        fp.write(source)
+        fp.flush()
 
-        MODULE_PATH = temp_file.name
+        MODULE_PATH = fp.name
         MODULE_NAME = __name__.split('.')[0].replace('-','_') + "_patch_modules"
         spec = importlib.util.spec_from_file_location(MODULE_NAME, MODULE_PATH)
         module = importlib.util.module_from_spec(spec)
