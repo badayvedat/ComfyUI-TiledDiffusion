@@ -216,7 +216,7 @@ def write_to_file_and_return_fn(original_func, source:str, mode='w+b'):
     # source code and stack traces can still be viewed when debugging.
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    with tempfile.NamedTemporaryFile(suffix=".patches.py", dir=current_dir) as fp:
+    with tempfile.NamedTemporaryFile(suffix=".patches.py", dir=current_dir, mode="w") as fp:
         fp.write(source)
         fp.flush()
 
