@@ -1,5 +1,6 @@
 import inspect
 import importlib
+import tempfile
 from textwrap import dedent, indent
 from copy import copy
 import types
@@ -210,15 +211,13 @@ def inject_code(original_func, data, mode='a'):
     modified_source = dedent(modified_source.strip("\n"))
     return write_to_file_and_return_fn(original_func, modified_source, mode)
 
-def write_to_file_and_return_fn(original_func, source:str, mode='a'):
+def write_to_file_and_return_fn(original_func, source:str, mode='w'):
     # Write the modified source code to a temporary file so the
     # source code and stack traces can still be viewed when debugging.
-    custom_name = ".patches.py"
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    temp_file_path = os.path.join(current_dir, custom_name)
-    with open(temp_file_path, mode) as temp_file:
+    with tempfile.TemporaryFile(mode=mode, suffix=".patches.py", dir=current_dir) as temp_file:
         temp_file.write(source)
-        temp_file.write("\n")
         temp_file.flush()
 
         MODULE_PATH = temp_file.name
