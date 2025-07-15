@@ -212,7 +212,7 @@ class AbstractDiffusion:
 
         self.tile_w = min(tile_w, self.w)
         self.tile_h = min(tile_h, self.h)
-        overlap = max(0, min(overlap, min(tile_w, tile_h) - 4))
+        overlap = max(0, min(overlap, min(self.tile_w, self.tile_h) - 4))
         # split the latent into overlapped tiles, then batching
         # weights basically indicate how many times a pixel is painted
         bboxes, weights = split_bboxes(self.w, self.h, self.tile_w, self.tile_h, overlap, self.get_tile_weights())
